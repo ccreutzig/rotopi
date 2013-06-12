@@ -11,6 +11,7 @@ class Dial
     @last_pulse = Time.now
     @current_digit = 0
     @dialed = ""
+    @mutex = Mutex.new
 
     # need lambda bound to local variable for correct scope
     getpulse = lambda {
@@ -37,9 +38,11 @@ class Dial
 
 private
   def check_last_digit
-    if Time.now - @last_pulse > LIMIT and @current_digit > 0
-      @dialed << (@current_digit % 10).to_s
-      @current_digit = 0
+    @mutex.synchronize do
+      if Time.now - @last_pulse > LIMIT and @current_digit > 0
+        @dialed << (@current_digit % 10).to_s
+        @current_digit = 0
+      end
     end
   end
 end
