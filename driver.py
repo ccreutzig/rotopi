@@ -69,6 +69,7 @@ class PhoneMachine:
                 self.status = self.standby
                 break
             if event[0] == 'hook_up':
+                self.linphone.answer()
                 self.status = self.inCall
                 break
         # stop ringing
